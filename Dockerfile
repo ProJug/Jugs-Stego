@@ -1,4 +1,4 @@
-# Build-less: just copy frontend and run FastAPI
+# Dockerfile
 FROM python:3.11-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -17,7 +17,8 @@ RUN pip install --no-cache-dir -r /app/backend/requirements.txt
 COPY backend /app/backend
 COPY frontend /app/frontend
 
-ENV PORT=8000
-EXPOSE 8000
+# don’t EXPOSE a fixed port; not required, but harmless if you do
+# EXPOSE 8000
 
-CMD ["uvicorn", "backend.app.main:app", "--host", "0.0.0.0", "--port", "8000", "--proxy-headers"]
+# ✅ bind to Railway’s provided PORT, default to 8000 locally
+CMD ["sh", "-c", "uvicorn backend.app.main:app --host 0.0.0.0 --port ${PORT:-8000} --proxy-headers"]
