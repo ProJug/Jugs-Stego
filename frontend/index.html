@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>JugsStego — by ProJug</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="JugsStego by ProJug — hide messages or files inside PNGs with AES-GCM." />
+    <link href="/static/style.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="bg-grid"></div>
+
+    <div class="page">
+        <header class="site-header">
+            <div class="container">
+                <h1>JugsStego</h1>
+                <p class="tagline">Cuz We All Got Secrets To Hide</p>
+            </div>
+        </header>
+
+        <main class="container main">
+            <nav class="tabs" role="tablist" aria-label="JugsStego actions">
+                <button id="tab-encrypt" class="tab active" role="tab" aria-selected="true"
+                    aria-controls="panel-encrypt">Encrypt</button>
+                <button id="tab-decrypt" class="tab" role="tab" aria-selected="false"
+                    aria-controls="panel-decrypt">Decrypt</button>
+            </nav>
+
+            <!-- Encrypt -->
+            <section id="panel-encrypt" class="panel active" role="tabpanel" aria-labelledby="tab-encrypt">
+                <div class="card">
+                    <div class="card-head">
+                        <h2>Encrypt & Embed</h2>
+                        <p>Choose a PNG cover, add a message or a file, and a strong passphrase. Get a stego PNG back.
+                        </p>
+                    </div>
+
+                    <div class="grid split">
+                        <!-- Left: cover -->
+                        <div class="left-col">
+                            <label class="field">
+                                <span>Cover PNG</span>
+                                <div id="drop-cover" class="dropzone" data-target="embed-cover">
+                                    <input id="embed-cover" type="file" accept=".png" />
+                                    <p class="dz-hint"><span class="kbd">Drop</span> or click to choose a PNG</p>
+                                </div>
+                            </label>
+
+                            <div class="file-chip" id="chip-cover" hidden>
+                                <span class="chip-name" id="chip-cover-name"></span>
+                                <button class="chip-x" id="chip-cover-x" aria-label="Clear">&times;</button>
+                            </div>
+
+                            <div class="preview-wrap" id="preview-cover-wrap" hidden>
+                                <img id="preview-cover" class="preview" alt="Cover preview" />
+                            </div>
+
+                            <div id="capacity-wrap" class="capacity" hidden>
+                                <div id="capacity-bar"></div>
+                            </div>
+                            <div id="capacity-text" class="muted small"></div>
+
+                            <div class="btns inline">
+                                <button id="btn-capacity" class="ghost" disabled>Check Capacity</button>
+                            </div>
+                        </div>
+
+                        <!-- Right: message/file/pass -->
+                        <div class="right-col">
+                            <div class="row-or">
+                                <div class="row-block">
+                                    <label class="field">
+                                        <span>Message (optional if attaching file)</span>
+                                        <textarea id="embed-message" rows="6"
+                                            placeholder="Type your secret message…"></textarea>
+                                    </label>
+                                </div>
+
+                                <div class="or-divider" aria-hidden="true"><span>or</span></div>
+
+                                <div class="row-block">
+                                    <label class="field">
+                                        <span>Payload file</span>
+                                        <div id="drop-payload" class="dropzone" data-target="embed-file">
+                                            <input id="embed-file" type="file" />
+                                            <p class="dz-hint"><span class="kbd">Drop</span> or click to choose a file
+                                            </p>
+                                        </div>
+                                    </label>
+
+                                    <div class="file-chip" id="chip-payload" hidden>
+                                        <span class="chip-name" id="chip-payload-name"></span>
+                                        <button class="chip-x" id="chip-payload-x" aria-label="Clear">&times;</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <label class="field pass-field">
+                                <span>Passphrase</span>
+                                <input id="embed-pass" type="password" placeholder="Use a long passphrase" />
+                            </label>
+
+                            <div class="btns">
+                                <button id="btn-embed" class="primary" disabled>Embed & Download stego.png</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p id="embed-status" class="status" role="status" aria-live="polite"></p>
+                </div>
+            </section>
+
+            <!-- Decrypt -->
+            <section id="panel-decrypt" class="panel" role="tabpanel" aria-labelledby="tab-decrypt">
+                <div class="card">
+                    <div class="card-head">
+                        <h2>Decrypt & Extract</h2>
+                        <p>Provide the stego PNG and the same passphrase. If the payload is text, it shows here; binary
+                            downloads.</p>
+                    </div>
+
+                    <div class="grid split">
+                        <div class="left-col">
+                            <label class="field">
+                                <span>Stego PNG</span>
+                                <div id="drop-stego" class="dropzone" data-target="extract-stego">
+                                    <input id="extract-stego" type="file" accept=".png" />
+                                    <p class="dz-hint"><span class="kbd">Drop</span> or click to choose the stego PNG
+                                    </p>
+                                </div>
+                            </label>
+
+                            <div class="file-chip" id="chip-stego" hidden>
+                                <span class="chip-name" id="chip-stego-name"></span>
+                                <button class="chip-x" id="chip-stego-x" aria-label="Clear">&times;</button>
+                            </div>
+
+                            <div class="preview-wrap" id="preview-stego-wrap" hidden>
+                                <img id="preview-stego" class="preview" alt="Stego preview" />
+                            </div>
+                        </div>
+
+                        <div class="right-col">
+                            <label class="field pass-field">
+                                <span>Passphrase</span>
+                                <input id="extract-pass" type="password" placeholder="Passphrase used to embed" />
+                            </label>
+
+                            <div class="btns">
+                                <button id="btn-extract" class="primary" disabled>Extract</button>
+                            </div>
+
+                            <div id="extract-output" class="output" hidden></div>
+                        </div>
+                    </div>
+
+                    <p id="extract-status" class="status" role="status" aria-live="polite"></p>
+                </div>
+            </section>
+
+            <section class="tips">
+                <p class="muted small">PNG good. JPEG bad. Recompression kills hidden bits. Encryption is authenticated,
+                    so wrong keys fail loudly.</p>
+            </section>
+        </main>
+
+        <footer class="site-footer">
+            <div class="container">
+                <small class="muted">© 2025 JugsStego · Made by the almighty ProJug</small>
+            </div>
+        </footer>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+
+</html>
