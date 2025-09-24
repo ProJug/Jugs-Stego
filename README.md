@@ -3,8 +3,6 @@
 Hide text or files inside PNGs. Extract with the same passphrase. Frontend is static HTML/JS, served by FastAPI. No bundlers. Clean.
 
 ## Local run
-
-### Option A: Python only
 ```bash
 # from repo root
 python -m venv .venv
